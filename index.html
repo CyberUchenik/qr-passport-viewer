@@ -43,18 +43,19 @@ function escapeHtml(s){
   });
 }
 
-const RESERVED_KEYS = ['наименование', 'примечания', 'доп. информация', 'фото'];
+const RESERVED_KEYS = ['наименование', 'примечания', 'доп. информация', 'фото', 'фото_url'];
 
 function photoSrc(photo){
-  if(/^data:/.test(photo)) return photo;
+  if(/^data:/.test(photo) || /^https?:/.test(photo)) return photo;
   return 'data:image/jpeg;base64,' + photo;
 }
 
 function render(data){
   const content = document.getElementById('content');
   let out = '';
-  if(data['фото']){
-    out += '<img class="equipment-photo" src="'+photoSrc(data['фото'])+'" alt="Фото оборудования">';
+  const photo = data['фото_url'] || data['фото'];
+  if(photo){
+    out += '<img class="equipment-photo" src="'+escapeHtml(photoSrc(photo))+'" alt="Фото оборудования">';
   }
   if(data['наименование']){
     out += '<div class="equipment-name">'+escapeHtml(data['наименование'])+'</div>';
